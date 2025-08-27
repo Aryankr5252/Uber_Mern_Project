@@ -60,6 +60,19 @@ Responses
     }
     ```
 
+  Example success response
+  ```json
+  {
+    "user": {
+      "_id": "64f1b2c3a1e4b5d6f7g8h9i",
+      "fullname": { "firstname": "Aryan", "lastname": "Kumar" },
+      "email": "aryan@example.com",
+      "socketId": null
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example.signature"
+  }
+  ```
+
 - 400 Bad Request
   - Occurs for validation errors or if a user with the same email already exists.
   - Validation error example (express-validator):
@@ -71,8 +84,34 @@ Responses
     { "success": false, "message": "User already registered with this email" }
     ```
 
+  Example validation error response
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Password must be at least 6 characters long",
+        "param": "password",
+        "location": "body"
+      }
+    ]
+  }
+  ```
+
+  Example duplicate-email response
+  ```json
+  {
+    "success": false,
+    "message": "User already registered with this email"
+  }
+  ```
+
 - 500 Internal Server Error
   - Generic server error for unexpected failures.
+
+  Example server error response
+  ```json
+  { "error": "Internal Server Error" }
+  ```
 
 Notes
 ---
