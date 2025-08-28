@@ -1,3 +1,4 @@
+import blackListTokenModel from "../models/blackListTokenModel.js";
 import { captainModel } from "../models/captainModel.js";
 import { createCaptain } from "../services/captainService.js";
 import { validationResult } from "express-validator";
@@ -34,4 +35,50 @@ export const registerCaptain = async (req, res, next) => {
     const token = captain.generateAuthToken();
 
     res.status(201).json({captain, token});
+}
+
+export const loginCaptain = async (req, res, next) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()});
+    }
+
+    const {email, password} = req.body;
+
+    const captain = await captainModel.findOne({email}).select('+password');
+    if(!captain){
+        return res.status(401).json({
+            success: false,
+            message: "Invalid email or password"
+        })
+    }
+
+    const compared = await captain.comparePassword(password);
+    if(!compared){
+        return res.status(401).json({
+            success: false,
+            message: "Invalid email or password"
+        })
+    }
+    const token = captain.generateAuthToken();
+    res.cookie("token", token);
+    res.status(201).json({captain, token});
+}
+
+export const getCaptainProfile = async (req, res, next) => {
+    res.status(200).json(req.captain);
+}
+
+export const logoutCaptain = async (req, res, next) => {
+     const token = req.cookies?.token ||
+  (req.headers.authorization ? req.headers.authorization.split(" ")[1] : null);
+
+  await blackListTokenModel.create({token});
+
+  res.clearCookie('token');
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully"
+  })
 }

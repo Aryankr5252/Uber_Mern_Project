@@ -345,3 +345,176 @@ Notes
 ---
 - Passwords are hashed before being stored. The API controller returns a `captain` object and a JWT token on success.
 - Always send requests over HTTPS in production.
+
+## POST /captains/login
+
+Description
+---
+Authenticates a captain. The endpoint validates the incoming JSON payload, checks the email and password, and returns a JWT token on success.
+
+URL
+---
+POST /captains/login
+
+Headers
+---
+- Content-Type: application/json
+
+Request body (JSON)
+---
+The request body must be a JSON object with the following shape:
+
+```
+{
+  "email": "string (required, must be a valid email)",
+  "password": "string (required, min length 6)"
+}
+```
+
+Example request
+---
+```
+{
+  "email": "john.doe@example.com",
+  "password": "securePass123"
+}
+```
+
+Validation rules (as implemented)
+---
+- `email` must be a valid email.
+- `password` is required and must be at least 6 characters.
+
+Responses
+---
+- 201 Created
+  - Description: Captain successfully authenticated.
+  - Body (JSON):
+    ```json
+    {
+      "captain": {
+        "_id": "string",
+        "fullname": { "firstname": "string", "lastname": "string" },
+        "email": "string",
+        "vehicle": {
+          "color": "string",
+          "plate": "string",
+          "capacity": "integer",
+          "vehicleType": "string"
+        }
+      },
+      "token": "<jwt token>"
+    }
+    ```
+
+- 400 Bad Request
+  - Occurs for validation errors.
+  - Validation error example:
+    ```json
+    { "errors": [ { "msg": "Invalid email format", "param": "email", "location": "body" } ] }
+    ```
+
+- 401 Unauthorized
+  - Occurs when the email or password is invalid.
+  - Example response:
+    ```json
+    {
+      "success": false,
+      "message": "Invalid email or password"
+    }
+    ```
+
+- 500 Internal Server Error
+  - Generic server error for unexpected failures.
+
+Notes
+---
+- Passwords are compared using the `comparePassword` method in the captain model.
+- Always send requests over HTTPS in production.
+
+## GET /captains/profile
+
+Description
+---
+Fetches the profile of the currently authenticated captain. The endpoint requires a valid JWT token to be sent in the request headers.
+
+URL
+---
+GET /captains/profile
+
+Headers
+---
+- Authorization: Bearer <jwt token>
+
+Responses
+---
+- 200 OK
+  - Description: Successfully fetched captain profile.
+  - Body (JSON):
+    ```json
+    {
+      "_id": "string",
+      "fullname": { "firstname": "string", "lastname": "string" },
+      "email": "string",
+      "vehicle": {
+        "color": "string",
+        "plate": "string",
+        "capacity": "integer",
+        "vehicleType": "string"
+      }
+    }
+    ```
+
+- 401 Unauthorized
+  - Occurs when the JWT token is missing or invalid.
+  - Example response:
+    ```json
+    {
+      "success": false,
+      "message": "Unauthorized access"
+    }
+    ```
+
+- 500 Internal Server Error
+  - Generic server error for unexpected failures.
+
+Notes
+---
+- Ensure the token is valid and not blacklisted.
+- Always send requests over HTTPS in production.
+
+---
+
+## GET /captains/logout
+
+Description
+---
+Logs out the currently authenticated captain. The endpoint clears the authentication token from cookies and blacklists the token to prevent further use.
+
+URL
+---
+GET /captains/logout
+
+Headers
+---
+- Authorization: Bearer <jwt token> (optional, if token is not in cookies)
+
+Responses
+---
+- 200 OK
+  - Description: Successfully logged out.
+  - Body (JSON):
+    ```json
+    {
+      "success": true,
+      "message": "Logged out successfully"
+    }
+    ```
+
+- 500 Internal Server Error
+  - Generic server error for unexpected failures.
+
+Notes
+---
+- The token is cleared from cookies and added to a blacklist to prevent reuse.
+- Always send requests over HTTPS in production.
