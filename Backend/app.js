@@ -5,6 +5,7 @@ import cors from "cors"
 import { connectdb } from "./db/db.js";
 import userRouter from "./routes/userRouter.js"
 import cookieParser from "cookie-parser";
+import captainRouter from "./routes/captainRouter.js";
 
 const app = express();
 app.use(express.json());
@@ -17,6 +18,7 @@ connectdb();
 
 //All routes
 app.use('/users', userRouter);
+app.use('/captains', captainRouter);
 app.get("/", (req, res) => {
     res.send("hanji")
 })

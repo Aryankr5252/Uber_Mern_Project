@@ -243,3 +243,105 @@ Notes
 ---
 - The token is cleared from cookies and added to a blacklist to prevent reuse.
 - Always send requests over HTTPS in production.
+
+## POST /captains/register
+
+Description
+---
+Registers a new captain. The endpoint validates the incoming JSON payload, hashes the password, saves the captain in the database, and returns a JWT token on success.
+
+URL
+---
+POST /captains/register
+
+Headers
+---
+- Content-Type: application/json
+
+Request body (JSON)
+---
+The request body must be a JSON object with the following shape:
+
+```
+{
+  "fullname": {
+    "firstname": "string (required, min length 3)",
+    "lastname": "string (optional, min length 3)"
+  },
+  "email": "string (required, must be a valid email)",
+  "password": "string (required, min length 6)",
+  "vehicle": {
+    "color": "string (required, min length 3)",
+    "plate": "string (required, min length 3)",
+    "capacity": "integer (required, min value 1)",
+    "vehicleType": "string (required, must be 'car', 'motorcycle', or 'auto')"
+  }
+}
+```
+
+Example request
+---
+```
+{
+  "fullname": { "firstname": "John", "lastname": "Doe" },
+  "email": "john.doe@example.com",
+  "password": "securePass123",
+  "vehicle": {
+    "color": "Red",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+Validation rules (as implemented)
+---
+- `email` must be a valid email.
+- `fullname.firstname` is required and must be at least 3 characters.
+- `password` is required and must be at least 6 characters.
+- `vehicle.color` is required and must be at least 3 characters.
+- `vehicle.plate` is required and must be at least 3 characters.
+- `vehicle.capacity` is required and must be an integer with a minimum value of 1.
+- `vehicle.vehicleType` is required and must be one of `car`, `motorcycle`, or `auto`.
+
+Responses
+---
+- 201 Created
+  - Description: Captain successfully created.
+  - Body (JSON):
+    ```json
+    {
+      "captain": {
+        "_id": "string",
+        "fullname": { "firstname": "string", "lastname": "string" },
+        "email": "string",
+        "vehicle": {
+          "color": "string",
+          "plate": "string",
+          "capacity": "integer",
+          "vehicleType": "string"
+        }
+      },
+      "token": "<jwt token>"
+    }
+    ```
+
+- 400 Bad Request
+  - Occurs for validation errors or if a captain with the same email already exists.
+  - Validation error example:
+    ```json
+    { "errors": [ { "msg": "Invalid email format", "param": "email", "location": "body" } ] }
+    ```
+  - Duplicate email example:
+    ```json
+    { "success": false, "message": "Captain already registered with this email" }
+    ```
+
+- 500 Internal Server Error
+  - Generic server error for unexpected failures.
+
+Notes
+---
+- Passwords are hashed before being stored. The API controller returns a `captain` object and a JWT token on success.
+- Always send requests over HTTPS in production.
