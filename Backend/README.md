@@ -60,19 +60,6 @@ Responses
     }
     ```
 
-  Example success response
-  ```json
-  {
-    "user": {
-      "_id": "64f1b2c3a1e4b5d6f7g8h9i",
-      "fullname": { "firstname": "Aryan", "lastname": "Kumar" },
-      "email": "aryan@example.com",
-      "socketId": null
-    },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example.signature"
-  }
-  ```
-
 - 400 Bad Request
   - Occurs for validation errors or if a user with the same email already exists.
   - Validation error example (express-validator):
@@ -84,34 +71,8 @@ Responses
     { "success": false, "message": "User already registered with this email" }
     ```
 
-  Example validation error response
-  ```json
-  {
-    "errors": [
-      {
-        "msg": "Password must be at least 6 characters long",
-        "param": "password",
-        "location": "body"
-      }
-    ]
-  }
-  ```
-
-  Example duplicate-email response
-  ```json
-  {
-    "success": false,
-    "message": "User already registered with this email"
-  }
-  ```
-
 - 500 Internal Server Error
   - Generic server error for unexpected failures.
-
-  Example server error response
-  ```json
-  { "error": "Internal Server Error" }
-  ```
 
 Notes
 ---
@@ -119,3 +80,166 @@ Notes
 - Always send requests over HTTPS in production.
 
 If you want, I can add example curl and Postman snippets or add this endpoint to a higher-level API docs file.
+
+## POST /users/login
+
+Description
+---
+Authenticates a user. The endpoint validates the incoming JSON payload, checks the email and password, and returns a JWT token on success.
+
+URL
+---
+POST /users/login
+
+Headers
+---
+- Content-Type: application/json
+
+Request body (JSON)
+---
+The request body must be a JSON object with the following shape:
+
+```
+{
+  "email": "string (required, must be a valid email)",
+  "password": "string (required, min length 6)"
+}
+```
+
+Example request
+---
+```
+{
+  "email": "aryan@example.com",
+  "password": "s3cr3tP@ss"
+}
+```
+
+Validation rules (as implemented)
+---
+- `email` must be a valid email.
+- `password` is required and must be at least 6 characters.
+
+Responses
+---
+- 201 Created
+  - Description: User successfully authenticated.
+  - Body (JSON):
+    ```json
+    {
+      "user": {
+        "_id": "string",
+        "fullname": { "firstname": "string", "lastname": "string" },
+        "email": "string",
+        "socketId": "string (optional)"
+      },
+      "token": "<jwt token>"
+    }
+    ```
+
+- 400 Bad Request
+  - Occurs for validation errors.
+  - Validation error example:
+    ```json
+    { "errors": [ { "msg": "Invalid email format", "param": "email", "location": "body" } ] }
+    ```
+
+- 401 Unauthorized
+  - Occurs when the email or password is invalid.
+  - Example response:
+    ```json
+    {
+      "success": false,
+      "message": "Invalid email or password"
+    }
+    ```
+
+- 500 Internal Server Error
+  - Generic server error for unexpected failures.
+
+Notes
+---
+- Passwords are compared using the `comparePassword` method in the user model.
+- Always send requests over HTTPS in production.
+
+## GET /users/profile
+
+Description
+---
+Fetches the profile of the currently authenticated user. The endpoint requires a valid JWT token to be sent in the request headers.
+
+URL
+---
+GET /users/profile
+
+Headers
+---
+- Authorization: Bearer <jwt token>
+
+Responses
+---
+- 200 OK
+  - Description: Successfully fetched user profile.
+  - Body (JSON):
+    ```json
+    {
+      "_id": "string",
+      "fullname": { "firstname": "string", "lastname": "string" },
+      "email": "string",
+      "socketId": "string (optional)"
+    }
+    ```
+
+- 401 Unauthorized
+  - Occurs when the JWT token is missing or invalid.
+  - Example response:
+    ```json
+    {
+      "success": false,
+      "message": "Unauthorized access"
+    }
+    ```
+
+- 500 Internal Server Error
+  - Generic server error for unexpected failures.
+
+Notes
+---
+- Ensure the token is valid and not blacklisted.
+- Always send requests over HTTPS in production.
+
+---
+
+## POST /users/logout
+
+Description
+---
+Logs out the currently authenticated user. The endpoint clears the authentication token from cookies and blacklists the token to prevent further use.
+
+URL
+---
+POST /users/logout
+
+Headers
+---
+- Authorization: Bearer <jwt token> (optional, if token is not in cookies)
+
+Responses
+---
+- 200 OK
+  - Description: Successfully logged out.
+  - Body (JSON):
+    ```json
+    {
+      "success": true,
+      "message": "Logged out successfully"
+    }
+    ```
+
+- 500 Internal Server Error
+  - Generic server error for unexpected failures.
+
+Notes
+---
+- The token is cleared from cookies and added to a blacklist to prevent reuse.
+- Always send requests over HTTPS in production.
