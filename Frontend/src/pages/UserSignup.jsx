@@ -18,7 +18,7 @@ const UserSignup = () => {
       email: email,
       password: password
     })
-    console.log(userData)
+
     setFirstname('');
     setLastname('');
     setEmail('');
@@ -64,8 +64,8 @@ const UserSignup = () => {
           <p className='text-center'> Already have a Account?<Link to='/login' className='text-blue-600'>Login here</Link></p>
         </form>
       </div>
-      <div>
-
+      <div className='text-[10px] leading-tight'>
+            <p>This site is protected by reCAPTCHA and the google <Link className='underline font-semibold'>Privacy Policy</Link> and <Link className='underline font-semibold' >Terms and Service</Link> apply.</p>
       </div>
     </div>
   )
