@@ -16,28 +16,28 @@ const CaptainProtectedWrapper = ({ children }) => {
         if (!token) {
             navigate('/captain-login');
         }
+        
+        const response = axios.get(`${import.meta.env.VITE_BASE_URL}/captains/profile`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response => {
+            if (response.status === 200) {
+                setCaptain(response.data)
+                setIsLoading(false);
+            }
+        }).catch(err => {
+            console.log(err);
+            navigate('/captain-login');
+        })
+        
+        
+        if (isLoading ) {
+            return (
+                <div>Loading...</div>
+            )
+        }
     }, [token])
-
-    const response = axios.get(`${import.meta.env.VITE_BASE_URL}/captains/profile`, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    }).then(response => {
-        if (response.status === 200) {
-            setCaptain(response.data)
-            setIsLoading(false);
-        }
-    }).catch(err => {
-        console.log(err);
-        navigate('/captain-login');
-    })
-
-
-    if (isLoading ) {
-        return (
-            <div>Loading...</div>
-        )
-    }
 
     return (
         <div>
