@@ -31,13 +31,13 @@ const CaptainProtectedWrapper = ({ children }) => {
             navigate('/captain-login');
         })
         
-        
-        if (isLoading ) {
-            return (
-                <div>Loading...</div>
-            )
-        }
     }, [token])
+    
+    if (isLoading ) {
+        return (
+            <div>Loading...</div>
+        )
+    }
 
     return (
         <div>

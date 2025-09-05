@@ -1,6 +1,7 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { UserDataContext } from '../context/UserContext'
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const UserProtectedWrapper = ({children}) => {
 
@@ -30,12 +31,13 @@ const UserProtectedWrapper = ({children}) => {
           navigate('/login');
         })
         
-        if (isLoading ) {
-          return (
-            <div>Loading...</div>
-          )
-        }
-    }, [token])
+      }, [token])
+      
+      if (isLoading ) {
+        return (
+          <div>Loading...</div>
+        )
+      }
         
   return (
     <div>
