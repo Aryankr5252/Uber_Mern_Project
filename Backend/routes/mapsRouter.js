@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import {getCoordinates, getDistanceTime} from "../controllers/mapController.js";
+import {getAutoCompleteSuggestions, getCoordinates, getDistanceTime} from "../controllers/mapController.js";
 import {authUser} from "../middlewares/authMidlleware.js";
 import {query} from "express-validator";
 

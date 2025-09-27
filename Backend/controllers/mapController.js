@@ -1,5 +1,5 @@
 import { validationResult } from "express-validator";
-import {getAddressCoordinates, getDistanceAndTime} from "../services/mapsService.js";
+import {getAddressCoordinates, getDistanceAndTime, getSuggestions} from "../services/mapsService.js";
 
 export const getCoordinates = async (req, res, next) => {
 
@@ -40,6 +40,15 @@ export const getDistanceTime = async (req, res, next) => {
 
 export const getAutoCompleteSuggestions = async (req, res, next) => {
     try{
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            return res.status(400).json({errors: errors.array()});
+        }
+
+        const {input} = req.query;
+        const suggestions = await getSuggestions(input);
+        res.status(200).json(suggestions);
+        next();
 
     }catch(error){
         res.status(500).json({error: error.message});

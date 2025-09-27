@@ -47,7 +47,7 @@ export const getDistanceAndTime = async (origin, destination) => {
     }
 }
 
-export const getAutoCompleteSuggestions = async (input) => {
+export const getSuggestions = async (input) => {
     if (!input) throw new Error("Input is required");
 
     const apiKey = process.env.GOOGLE_MAPS_API;
