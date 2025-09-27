@@ -1,21 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom';
 
-const ConfirmRidePopUp = (props) => {
-
-  const [otp, setOtp] = useState('');
-
-  const submitHandler= (e)=>{
-    e.preventDefault();
-  }
-
+const FinishRide = (props) => {
   return (
-    <div className="h-screen max-w-sm mx-auto relative bg-white rounded-2xl shadow-lg p-4 space-y-4">
+    <div className=" max-w-sm mx-auto relative bg-white rounded-2xl shadow-lg p-4 space-y-4">
       {/* Header */}
       <h5 onClick={() => {
-                props.setConfirmRidePopupPanel(false);
+                props.setFinishRidePanel(false);
             }} className='p-1 text-center w-[93%] absolute -top-1 '><i className="text-3xl text-gray-200 ri-arrow-down-wide-fill"></i></h5>
-      <h3 className='text-2xl font-semibold mb-5'>Confirm this Ride to Start</h3>
+      <h3 className='text-2xl font-semibold mb-5'>Finish this Ride</h3>
       <div className="flex border-2 border-yellow-500 rounded-lg p-3 items-center justify-between">
         <div className="flex items-center space-x-3">
           <img
@@ -58,30 +51,19 @@ const ConfirmRidePopUp = (props) => {
       </div>
 
       <div>
-        <form onClick={(e) => {
-        // submitHandler(e);
-      }}>
-        <input value={otp} onChange={(e)=>{
-          setOtp(e.target.value);
-        }}
-         type="text" className='bg-[#eee] px-6 py-2 font-mono focus:ring-2 focus:ring-blue-400 
-             focus:outline-none text-lg rounded-lg w-full mt-3' placeholder='Enter OTP' />
-        {/* Buttons */}
+        
+        
         <div className="flex justify-between pt-2">
-            <button onClick={() => {
-                    props.setConfirmRidePopupPanel(false);
-                    props.setRidePopupPanel(false);
-                }} className="px-8 py-2 rounded-xl text-lg border border-red-800 text-white font-medium bg-red-500">
-            Cancel
-            </button>
-            <Link to='/captain-riding' className="px-8 py-2 text-lg rounded-xl bg-green-600 text-white font-semibold hover:bg-yellow-500 shadow">
-            Accept
+            
+            <Link to='/captain-riding' className="px-8 py-2 w-full rounded-lg text-center bg-green-600 text-white text-lg font-semibold hover:bg-yellow-500 shadow">
+            Finish Ride
             </Link>
+            <p className=' mt-10 text-xs '>Click on finish ride button if you have completed the payment</p>
         </div>
-      </form>
+      
       </div>
     </div>
   )
 }
 
-export default ConfirmRidePopUp
+export default FinishRide

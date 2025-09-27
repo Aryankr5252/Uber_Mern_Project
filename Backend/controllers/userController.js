@@ -5,7 +5,7 @@ import blackListTokenModel from "../models/blackListTokenModel.js";
 
 export const registerUser = async (req, res, next) => {
 
-  // checks whethe there are any validation errors  
+  // checks whether there are any validation errors  
     const errors = validationResult(req)
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()});
