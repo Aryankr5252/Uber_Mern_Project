@@ -7,6 +7,7 @@ import userRouter from "./routes/userRouter.js"
 import cookieParser from "cookie-parser";
 import captainRouter from "./routes/captainRouter.js";
 import mapsRouter from "./routes/mapsRouter.js";
+import rideRouter from "./routes/rideRouter.js";
 
 const app = express();
 app.use(express.json());
@@ -21,6 +22,7 @@ connectdb();
 app.use('/users', userRouter);
 app.use('/captains', captainRouter);
 app.use("/maps", mapsRouter);
+app.use("/rides", rideRouter);
 app.get("/", (req, res) => {
     res.send("hanji")
 })

@@ -518,3 +518,88 @@ Notes
 ---
 - The token is cleared from cookies and added to a blacklist to prevent reuse.
 - Always send requests over HTTPS in production.
+
+## GET /rides/get-fare
+
+Description
+---
+Calculates the estimated fare for a ride based on the pickup and destination locations.
+
+URL
+---
+GET /rides/get-fare
+
+Headers
+---
+- Authorization: Bearer <jwt token>
+
+Query Parameters
+---
+- `pickup` (string, required): The pickup location. Must be at least 3 characters long.
+- `destination` (string, required): The destination location. Must be at least 3 characters long.
+
+Example Request
+---
+```
+GET /rides/get-fare?pickup=562/11-A&destination=105%20William%20St HTTP/1.1
+Host: localhost:4000
+Authorization: Bearer <jwt token>
+```
+
+Responses
+---
+
+- **200 OK**
+  - Description: Successfully calculated the fare.
+  - Body (JSON):
+    ```json
+    {
+      "success": true,
+      "fare": {
+        "auto": 50.5,
+        "car": 80.75,
+        "motorcycle": 40.25
+      }
+    }
+    ```
+
+- **400 Bad Request**
+  - Occurs when validation fails for the query parameters.
+  - Example response:
+    ```json
+    {
+      "errors": [
+        {
+          "msg": "Pickup location must be at least 3 characters long",
+          "param": "pickup",
+          "location": "query"
+        }
+      ]
+    }
+    ```
+
+- **401 Unauthorized**
+  - Occurs when the JWT token is missing or invalid.
+  - Example response:
+    ```json
+    {
+      "success": false,
+      "message": "Access denied."
+    }
+    ```
+
+- **500 Internal Server Error**
+  - Generic server error for unexpected failures.
+  - Example response:
+    ```json
+    {
+      "success": false,
+      "message": "Failed to calculate fare"
+    }
+    ```
+
+Notes
+---
+- The fare is calculated based on the distance and time between the pickup and destination locations.
+- Different rates are applied for `auto`, `car`, and `motorcycle`.
+- Always send requests over HTTPS in production.
