@@ -224,7 +224,7 @@ const Home = () => {
             <ConfirmedRide fare={fare} vechicleType={vechicleType} pickup={pickup} destination={destination} createRide={createRide} setVehicleFound={setVehicleFound} setConfirmRidePanel={setConfirmRidePanel} />
         </div>
         <div ref={vehicleFoundRef} className="fixed w-full z-20 translate-y-full bg-white bottom-0 px-3 py-6 pt-12">
-            <LookingForDriver setVehicleFound={setVehicleFound} />
+            <LookingForDriver fare={fare} vechicleType={vechicleType} pickup={pickup} destination={destination} setVehicleFound={setVehicleFound} />
         </div>
         <div ref={waitingDriverRef} className="fixed w-full z-20 translate-y-full bg-white bottom-0 px-3 py-6 pt-12">
             <WaitingForDriver setWaitingDriver={setWaitingDriver} />
