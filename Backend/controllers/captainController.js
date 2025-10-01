@@ -25,7 +25,7 @@ export const registerCaptain = async (req, res, next) => {
         // ⬇️ createCaptain hata ke direct model use karo
         const captain = new captainModel({
             fullname: {
-                firstname: fullname.firstname || fullname,
+                firstname: fullname.firstname || "",
                 lastname: fullname.lastname || ""
             },
             email,

@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { CaptainDataContext } from '../context/CaptainContext';
 import axios from 'axios';
+import { useEffect } from 'react';
 
 const CaptainSignup = () => {
   const [email, setEmail] = useState('');
@@ -18,6 +19,10 @@ const CaptainSignup = () => {
   const { captain, setCaptain } = useContext(CaptainDataContext);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+  console.log("Captain updated:", captain);
+}, [captain]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -42,7 +47,10 @@ const CaptainSignup = () => {
 
     if(response.status === 201){
       const data = response.data;
+      // console.log("Signup response:", response.data);
+      // console.log("Signup :", data);
       setCaptain(data.captain)
+      // console.log(captain);
       localStorage.setItem('token', data.token);
       navigate('/captain-home');
     }
@@ -131,7 +139,7 @@ const CaptainSignup = () => {
               <option value="">Select Vehicle Type</option>
               <option value="car">Car</option>
               <option value="auto">Auto</option>
-              <option value="moto">motorcycle</option>
+              <option value="motorcycle">Motorcycle</option>
             </select>
           </div>
 
